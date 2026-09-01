@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Ashes of Olympus</title>
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#080604;color:#fff;font-family:Georgia,serif}
+body{touch-action:none;user-select:none}
+
+#game{
+position:relative;width:100vw;height:100vh;overflow:hidden;
+background:
+radial-gradient(circle at 70% 30%,rgba(255,120,30,.13),transparent 30%),
+linear-gradient(#120d09 0%,#24150c 45%,#090706 100%);
+}
+
+#sky{
+position:absolute;inset:0;
+background:
+radial-gradient(circle at 25% 18%,#fff 0 1px,transparent 2px),
+radial-gradient(circle at 75% 13%,#fff 0 1px,transparent 2px),
+linear-gradient(180deg,rgba(255,255,255,.03),transparent 50%);
+opacity:.6
+}
+
+.moon{
+position:absolute;width:120px;height:120px;border-radius:50%;
+right:12%;top:12%;
+background:#d7c6a7;
+box-shadow:0 0 50px rgba(255,190,100,.2)
+}
+
+.mountain{
+position:absolute;bottom:23%;width:0;height:0;
+border-left:180px solid transparent;border-right:180px solid transparent;
+border-bottom:300px solid #120d0a;
+opacity:.9
+}
+.m1{left:0}.m2{left:25%;transform:scale(1.3)}.m3{right:-5%;transform:scale(1.1)}
+
+.ground{
+position:absolute;left:-10%;right:-10%;bottom:-12%;
+height:40%;background:#0b0806;
+transform:rotate(-2deg);
+border-top:2px solid #352116;
+}
+
+.ash{
+position:absolute;width:4px;height:4px;border-radius:50%;
+background:#b8a99a;opacity:.5;
+animation:fall linear infinite;
+}
+@keyframes fall{to{transform:translateY(110vh) translateX(60px);opacity:0}}
+
+#intro{
+position:absolute;inset:0;z-index:20;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+text-align:center;
+background:rgba(3,2,1,.82);
+transition:opacity .8s
+}
+#intro h1{
+font-size:clamp(42px,10vw,90px);
+letter-spacing:7px;
+text-shadow:0 0 35px rgba(255,130,30,.25)
+}
+#intro p{color:#b8a99a;margin:14px 20px 30px;max-width:550px}
+.start{
+padding:15px 30px;border:1px solid #a87843;background:#21140b;
+color:#fff;border-radius:4px;letter-spacing:3px;font-weight:bold
+}
+
+#hud{
+position:absolute;z-index:10;top:18px;left:18px;right:18px;
+display:none;justify-content:space-between;align-items:flex-start
+}
+.bar{width:190px;height:13px;background:#211815;border:1px solid #5b3a28;margin-top:6px}
+.fill{height:100%;width:100%;transition:width .2s}
+#hp{background:#9b2922}
+#rage{background:#c47822;width:0}
+.label{font-size:11px;letter-spacing:2px;color:#b8a99a}
+#score{font-size:14px;letter-spacing:2px}
+
+#hero{
+position:absolute;z-index:5;left:18%;bottom:23%;
+width:70px;height:125px;
+}
+.body{
+position:absolute;left:22px;bottom:0;width:30px;height:70px;
+background:linear-gradient(90deg,#151313,#53402e,#161313);
+border-radius:15px 15px 7px 7px
+}
+.head{
+position:absolute;left:27px;top:5px;width:22px;height:24px;
+border-radius:50%;background:#7b4e32
+}
+.hair{
+position:absolute;left:23px;top:0;width:31px;height:18px;
+background:#16100d;border-radius:50% 50% 35% 35%
+}
+.leg{
+position:absolute;bottom:-20px;width:13px;height:35px;background:#201916
+}
+.l1{left:24px}.l2{left:43px}
+.arm{
+position:absolute;width:12px;height:55px;background:#67432d;
+top:42px;border-radius:10px
+}
+.a1{left:8px;transform:rotate(18deg)}
+.a2{right:5px;transform:rotate(-18deg)}
+.staff{
+position:absolute;right:-45px;top:5px;width:5px;height:135px;
+background:#9b6733;transform:rotate(25deg);
+box-shadow:0 0 10px rgba(200,130,50,.4)
+}
+#enemy{
+position:absolute;z-index:4;right:20%;bottom:23%;
+width:90px;height:120px;transition:.15s
+}
+.e-body{
+position:absolute;bottom:0;left:22px;width:48px;height:76px;
+background:linear-gradient(90deg,#1b1110,#5a1d18,#160b0b);
+border-radius:25px 25px 10px 10px
+}
+.e-head{
+position:absolute;top:0;left:25px;width:40px;height:40px;
+border-radius:50%;background:#421512;
+box-shadow:0 0 18px #9e2e1e
+}
+.eye{
+position:absolute;top:15px;width:7px;height:5px;background:#ffb02e;
+box-shadow:0 0 8px #ff6a00
+}
+.eye1{left:8px}.eye2{right:8px}
+.claw{position:absolute;bottom:15px;width:18px;height:50px;background:#38130f;border-radius:15px}
+.c1{left:5px;transform:rotate(25deg)}.c2{right:5px;transform:rotate(-25deg)}
+
+#bossText{
+position:absolute;z-index:9;top:28%;left:50%;transform:translateX(-50%);
+font-size:clamp(25px,6vw,55px);letter-spacing:5px;
+opacity:0;text-shadow:0 0 25px #f50;transition:.4s
+}
+
+#dialogue{
+position:absolute;z-index:12;bottom:28%;left:50%;transform:translateX(-50%);
+width:min(600px,90%);padding:16px 20px;
+background:rgba(8,5,3,.85);border:1px solid #53321e;
+text-align:center;display:none
+}
+#dialogue span{color:#d9b98a;font-size:14px;line-height:1.5}
+
+.controls{
+position:absolute;z-index:15;bottom:20px;left:0;right:0;
+display:none;justify-content:space-between;padding:0 18px
+}
+.pad{display:flex;gap:9px}
+.btn{
+width:58px;height:58px;border-radius:50%;
+border:1px solid #765239;background:rgba(20,12,8,.82);
+color:#fff;font-weight:bold;font-size:12px;
+-webkit-tap-highlight-color:transparent
+}
+.btn:active{transform:scale(.9);background:#56321e}
+.attack{width:70px;height:70px;border-color:#a26b39}
+.rage{border-color:#c36e25;color:#f0a54d}
+
+.flash{animation:flash .18s}
+@keyframes flash{50%{filter:brightness(4)}}
+
+.hit{
+animation:hit .25s
+}
+@keyframes hit{
+25%{transform:translateX(15px)}75%{transform:translateX(-10px)}
+}
+
+#gameover{
+position:absolute;inset:0;z-index:30;display:none;
+background:rgba(0,0,0,.88);align-items:center;justify-content:center;
+flex-direction:column;text-align:center
+}
+#gameover h2{font-size:50px;letter-spacing:5px}
+#gameover p{color:#999;margin:12px}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<div id="sky"></div>
+<div class="moon"></div>
+
+<div class="mountain m1"></div>
+<div class="mountain m2"></div>
+<div class="mountain m3"></div>
+
+<div class="ground"></div>
+
+<div id="intro">
+<h1>ASHES OF OLYMPUS</h1>
+<p>CHAPTER I — THE FALL OF OLYMPUS</p>
+<button class="start" id="start">BEGIN YOUR JOURNEY</button>
+</div>
+
+<div id="hud">
+<div>
+<div class="label">VITALITY</div>
+<div class="bar"><div id="hp" class="fill"></div></div>
+<div class="label" style="margin-top:7px">RAGE</div>
+<div class="bar"><div id="rage" class="fill"></div></div>
+</div>
+<div id="score">ASHES: 0</div>
+</div>
+
+<div id="hero">
+<div class="hair"></div>
+<div class="head"></div>
+<div class="body"></div>
+<div class="leg l1"></div>
+<div class="leg l2"></div>
+<div class="arm a1"></div>
+<div class="arm a2"></div>
+<div class="staff"></div>
+</div>
+
+<div id="enemy">
+<div class="e-head"><i class="eye eye1"></i><i class="eye eye2"></i></div>
+<div class="e-body"></div>
+<div class="claw c1"></div>
+<div class="claw c2"></div>
+</div>
+
+<div id="bossText">THE ASHEN BEAST</div>
+
+<div id="dialogue">
+<span id="dialogueText"></span>
+</div>
+
+<div class="controls">
+<div class="pad">
+<button class="btn" data-key="left">◀</button>
+<button class="btn" data-key="right">▶</button>
+</div>
+
+<div class="pad">
+<button class="btn" data-key="dodge">DODGE</button>
+<button class="btn attack" data-key="attack">STRIKE</button>
+<button class="btn rage" data-key="rage">RAGE</button>
+</div>
+</div>
+
+<div id="gameover">
+<h2>YOU FELL</h2>
+<p>The ashes remember every warrior.</p>
+<button class="start" id="restart">RISE AGAIN</button>
+</div>
+
+</div>
+
+<script>
+const hero=document.getElementById("hero");
+const enemy=document.getElementById("enemy");
+const intro=document.getElementById("intro");
+const hud=document.getElementById("hud");
+const controls=document.querySelector(".controls");
+const hp=document.getElementById("hp");
+const rage=document.getElementById("rage");
+const scoreEl=document.getElementById("score");
+const dialogue=document.getElementById("dialogue");
+const dialogueText=document.getElementById("dialogueText");
+const bossText=document.getElementById("bossText");
+const gameover=document.getElementById("gameover");
+
+let playing=false;
+let x=18;
+let enemyX=72;
+let health=100;
+let ragePower=0;
+let score=0;
+let lastAttack=0;
+let lastEnemyAttack=0;
+let invincible=false;
+
+function ash(){
+const a=document.createElement("div");
+a.className="ash";
+a.style.left=Math.random()*100+"vw";
+a.style.top="-10px";
+a.style.animationDuration=(4+Math.random()*6)+"s";
+document.getElementById("game").appendChild(a);
+setTimeout(()=>a.remove(),10000);
+}
+setInterval(ash,350);
+
+function say(text,time=2600){
+dialogueText.textContent=text;
+dialogue.style.display="block";
+setTimeout(()=>dialogue.style.display="none",time);
+}
+
+function update(){
+hero.style.left=x+"%";
+enemy.style.right=(100-enemyX)+"%";
+hp.style.width=health+"%";
+rage.style.width=ragePower+"%";
+scoreEl.textContent="ASHES: "+score;
+}
+
+function attack(){
+if(!playing)return;
+const now=Date.now();
+if(now-lastAttack<500)return;
+lastAttack=now;
+
+hero.classList.add("flash");
+setTimeout(()=>hero.classList.remove("flash"),180);
+
+const distance=Math.abs(x-enemyX);
+
+if(distance<18){
+enemy.classList.add("hit");
+setTimeout(()=>enemy.classList.remove("hit"),250);
+
+enemyHealth-=18;
+ragePower=Math.min(100,ragePower+18);
+score+=10;
+
+if(enemyHealth<=0){
+enemyHealth=100;
+score+=100;
+ragePower=Math.min(100,ragePower+30);
+say("Warrior: Was that supposed to hurt?");
+bossText.style.opacity="1";
+setTimeout(()=>bossText.style.opacity="0",900);
+}
+}
+update();
+}
+
+let enemyHealth=100;
+
+function enemyAttack(){
+if(!playing)return;
+if(Math.abs(x-enemyX)<17){
+const now=Date.now();
+if(now-lastEnemyAttack<1100)return;
+lastEnemyAttack=now;
+
+if(invincible)return;
+
+health-=10;
+ragePower=Math.min(100,ragePower+8);
+hero.classList.add("hit");
+setTimeout(()=>hero.classList.remove("hit"),250);
+
+if(health<=0){
+health=0;
+playing=false;
+controls.style.display="none";
+gameover.style.display="flex";
+}
+update();
+}
+}
+
+function dodge(){
+if(!playing)return;
+invincible=true;
+hero.style.transform="translateY(-20px) scale(.9)";
+setTimeout(()=>{
+invincible=false;
+hero.style.transform="";
+},500);
+}
+
+function rageAttack(){
+if(!playing||ragePower<100)return;
+
+ragePower=0;
+enemyHealth-=55;
+score+=75;
+
+enemy.classList.add("flash");
+setTimeout(()=>enemy.classList.remove("flash"),400);
+
+say("THE ASHES AWAKEN.",1800);
+
+if(enemyHealth<=0){
+enemyHealth=100;
+score+=250;
+}
+
+update();
+}
+
+function move(dir){
+if(!playing)return;
+x+=dir*2.2;
+x=Math.max(5,Math.min(88,x));
+update();
+}
+
+document.querySelectorAll(".btn").forEach(btn=>{
+const key=btn.dataset.key;
+
+btn.addEventListener("touchstart",e=>{
+e.preventDefault();
+
+if(key==="left")move(-1);
+if(key==="right")move(1);
+if(key==="attack")attack();
+if(key==="dodge")dodge();
+if(key==="rage")rageAttack();
+},{passive:false});
+
+btn.addEventListener("click",()=>{
+if(key==="left")move(-1);
+if(key==="right")move(1);
+if(key==="attack")attack();
+if(key==="dodge")dodge();
+if(key==="rage")rageAttack();
+});
+});
+
+document.addEventListener("keydown",e=>{
+if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")move(-1);
+if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")move(1);
+if(e.key===" "||e.key.toLowerCase()==="j")attack();
+if(e.key.toLowerCase()==="k")dodge();
+if(e.key.toLowerCase()==="l")rageAttack();
+});
+
+document.getElementById("start").onclick=()=>{
+intro.style.opacity="0";
+
+setTimeout(()=>{
+intro.style.display="none";
+hud.style.display="flex";
+controls.style.display="flex";
+playing=true;
+
+say("Warrior: Olympus is burning... and somehow I'm still alive.",3500);
+
+setTimeout(()=>{
+say("Voice in the darkness: Then perhaps the gods made one mistake.",3500);
+},3800);
+
+},700);
+};
+
+document.getElementById("restart").onclick=()=>{
+health=100;
+ragePower=0;
+score=0;
+enemyHealth=100;
+x=18;
+enemyX=72;
+
+gameover.style.display="none";
+controls.style.display="flex";
+playing=true;
+
+say("Warrior: Again? Fine. Let's make it interesting.");
+
+update();
+};
+
+setInterval(()=>{
+if(!playing)return;
+
+if(enemyX>x)enemyX-=.18;
+else enemyX+=.18;
+
+enemyX=Math.max(12,Math.min(88,enemyX));
+
+enemyAttack();
+update();
+
+},50);
+
+update();
+</script>
+
+</body>
+</html>
