@@ -45,28 +45,19 @@ button{font:inherit;color:inherit;border:0}
 .fill{height:100%;transition:width .2s}.hp{background:#a83228}.rage{background:#d07a25}
 #score{font:12px Arial,sans-serif;letter-spacing:2px;color:#d7c2ad;text-align:right}
 
-#hero{position:absolute;z-index:12;left:27%;bottom:23%;width:100px;height:170px;transition:left .08s}
-.shadow{position:absolute;bottom:-4px;left:5px;width:90px;height:15px;border-radius:50%;background:rgba(0,0,0,.65);filter:blur(4px)}
-.hairBack{position:absolute;left:31px;top:12px;width:39px;height:58px;background:#17110e;border-radius:50% 45% 55% 50%;transform:rotate(7deg)}
-.head{position:absolute;left:38px;top:18px;width:31px;height:36px;border-radius:48% 48% 45% 45%;background:linear-gradient(90deg,#7a492f,#a96945,#5c3526);z-index:3}
-.hairTop{position:absolute;left:34px;top:11px;width:39px;height:25px;border-radius:55% 55% 35% 35%;background:#17110e;z-index:4}
-.hairTail{position:absolute;left:26px;top:25px;width:24px;height:62px;background:#17110e;border-radius:50%;transform:rotate(16deg)}
-.torso{position:absolute;left:28px;top:53px;width:52px;height:73px;border-radius:18px 18px 12px 12px;background:linear-gradient(90deg,#171719,#4b4039,#171719);border:1px solid #665244}
-.belt{position:absolute;left:27px;top:101px;width:54px;height:9px;background:#8a5b32;z-index:4}
-.arm{position:absolute;top:61px;width:15px;height:62px;border-radius:10px;background:#8a5738;z-index:2}
-.armL{left:18px;transform:rotate(13deg)}.armR{left:75px;transform:rotate(-22deg)}
-.hand{position:absolute;top:114px;width:16px;height:16px;border-radius:50%;background:#8a5738}
-.handL{left:10px}.handR{left:82px}
-.leg{position:absolute;top:120px;width:19px;height:55px;background:linear-gradient(90deg,#171719,#41342e,#171719);border-radius:7px}
-.legL{left:31px;transform:rotate(3deg)}.legR{left:59px;transform:rotate(-4deg)}
-.boot{position:absolute;top:164px;width:31px;height:12px;background:#171313;border-radius:8px}
-.bootL{left:21px}.bootR{left:56px}
-.weapon{position:absolute;left:82px;top:40px;width:7px;height:112px;background:linear-gradient(#d9c5a4,#775431);transform:rotate(28deg);transform-origin:top;z-index:1;box-shadow:0 0 8px rgba(255,200,130,.18)}
-.weapon:after{content:"";position:absolute;top:-14px;left:-4px;width:15px;height:25px;border-radius:50% 50% 5px 5px;background:#c9c0a9}
-#hero.attack .weapon{animation:swing .28s ease-out}.attackPose{animation:bodyHit .28s}
-@keyframes swing{50%{transform:rotate(-55deg) scaleY(1.05)}}@keyframes bodyHit{50%{transform:translateX(8px) rotate(2deg)}}
-#hero.dodge{animation:dodge .42s ease-out}@keyframes dodge{50%{transform:translate(55px,-20px) rotate(-12deg);opacity:.75}}
-
+#hero{position:absolute;z-index:12;left:27%;bottom:20%;width:150px;height:205px;transition:left .08s;filter:drop-shadow(0 12px 8px rgba(0,0,0,.55))}
+.heroShadow{position:absolute;bottom:-3px;left:25px;width:105px;height:16px;border-radius:50%;background:rgba(0,0,0,.68);filter:blur(5px)}
+.heroArt{position:absolute;left:0;bottom:0;width:150px;height:205px;overflow:visible}
+.heroBody{transform-origin:75px 185px}
+#hero.attack .heroWeapon{animation:swordSwing .28s ease-out}
+#hero.attack .heroBody{animation:bodyStrike .28s ease-out}
+#hero.dodge .heroBody{animation:heroDodge .42s ease-out}
+#hero.jump .heroBody{animation:heroJump .48s ease-out}
+@keyframes swordSwing{50%{transform:rotate(-52deg) translate(-4px,4px)}}
+@keyframes bodyStrike{50%{transform:translateX(7px) rotate(2deg)}}
+@keyframes heroDodge{50%{transform:translate(55px,-18px) rotate(-10deg);opacity:.78}}
+@keyframes heroJump{50%{transform:translateY(-20px)}}
+.heroWeapon{transform-origin:17px 105px}
 #enemy{position:absolute;z-index:11;right:21%;bottom:22%;width:125px;height:150px;transition:right .1s}
 .eGlow{position:absolute;inset:15px 10px 0;border-radius:50%;background:radial-gradient(circle,rgba(190,55,24,.24),transparent 65%);filter:blur(8px)}
 .eHead{position:absolute;left:39px;top:8px;width:48px;height:48px;border-radius:50%;background:#381310;box-shadow:0 0 22px #8d2a1c}
@@ -125,11 +116,51 @@ button{font:inherit;color:inherit;border:0}
   </div>
 
   <div id="hero">
-    <div class="shadow"></div><div class="hairBack"></div><div class="hairTail"></div>
-    <div class="head"></div><div class="hairTop"></div><div class="torso"></div><div class="belt"></div>
-    <div class="arm armL"></div><div class="arm armR"></div><div class="hand handL"></div><div class="hand handR"></div>
-    <div class="leg legL"></div><div class="leg legR"></div><div class="boot bootL"></div><div class="boot bootR"></div>
-    <div class="weapon"></div>
+    <div class="heroShadow"></div>
+    <svg class="heroArt" viewBox="0 0 150 205" aria-label="warrior">
+      <defs>
+        <linearGradient id="skin" x1="0" x2="1"><stop offset="0" stop-color="#5b3326"/><stop offset=".48" stop-color="#a96747"/><stop offset="1" stop-color="#6e3d2d"/></linearGradient>
+        <linearGradient id="cloth" x1="0" x2="1"><stop offset="0" stop-color="#15171a"/><stop offset=".5" stop-color="#4b403a"/><stop offset="1" stop-color="#17181b"/></linearGradient>
+        <linearGradient id="leather" x1="0" x2="1"><stop offset="0" stop-color="#3a2116"/><stop offset=".5" stop-color="#8a5a31"/><stop offset="1" stop-color="#402516"/></linearGradient>
+      </defs>
+      <g class="heroBody">
+        <path d="M55 142 C53 157 50 174 48 188 L65 188 C68 173 70 158 72 144Z" fill="url(#cloth)" stroke="#100f10" stroke-width="2"/>
+        <path d="M78 143 C80 158 84 174 88 188 L105 188 C101 171 99 156 97 141Z" fill="url(#cloth)" stroke="#100f10" stroke-width="2"/>
+        <path d="M45 184 L66 184 L72 193 Q72 199 65 200 L40 200 Q36 197 40 191Z" fill="#171313" stroke="#70513d" stroke-width="2"/>
+        <path d="M88 184 L106 184 L119 194 Q121 199 113 200 L88 200 Q84 197 88 192Z" fill="#171313" stroke="#70513d" stroke-width="2"/>
+        <path d="M48 75 Q75 61 101 76 L103 130 Q94 143 75 145 Q56 143 46 130Z" fill="url(#cloth)" stroke="#7c6658" stroke-width="2"/>
+        <path d="M56 82 Q75 91 94 82 L96 111 Q75 119 54 111Z" fill="#282328"/>
+        <path d="M49 111 Q75 119 101 111 L101 122 Q75 132 49 122Z" fill="#171619"/>
+        <path d="M47 119 Q75 128 102 119 L102 131 Q75 140 47 131Z" fill="url(#leather)"/>
+        <rect x="69" y="124" width="13" height="10" rx="2" fill="#c69a55" stroke="#6e4a2b" stroke-width="2"/>
+        <path d="M48 79 Q36 78 31 89 L42 102 L55 94Z" fill="#30292a" stroke="#806a5c" stroke-width="2"/>
+        <path d="M100 79 Q112 78 118 90 L106 103 L94 94Z" fill="#30292a" stroke="#806a5c" stroke-width="2"/>
+        <path d="M38 92 Q31 105 27 119 Q26 125 32 127 Q38 128 41 121 L52 101Z" fill="url(#skin)" stroke="#4a2b22" stroke-width="2"/>
+        <path d="M111 92 Q121 101 127 111 Q130 117 125 121 Q120 124 116 118 L99 103Z" fill="url(#skin)" stroke="#4a2b22" stroke-width="2"/>
+        <path d="M28 116 L40 111 L44 120 L32 127Z" fill="#9b744a"/>
+        <path d="M116 111 L127 108 L130 117 L120 123Z" fill="#9b744a"/>
+        <ellipse cx="31" cy="126" rx="7" ry="6" fill="url(#skin)"/>
+        <ellipse cx="126" cy="119" rx="7" ry="6" fill="url(#skin)"/>
+        <path d="M67 66 L66 78 Q75 84 84 77 L83 66Z" fill="url(#skin)"/>
+        <path d="M55 31 Q75 17 95 31 L92 62 Q87 73 75 76 Q63 73 58 62Z" fill="url(#skin)" stroke="#3e261d" stroke-width="2"/>
+        <path d="M53 42 Q51 23 69 16 Q87 9 99 28 Q103 37 96 47 L90 38 Q80 29 64 35 L58 48Z" fill="#17110f"/>
+        <path d="M58 29 Q51 48 59 61 L51 68 Q43 49 48 31Z" fill="#17110f"/>
+        <path d="M88 20 Q100 25 103 39 L96 56 L91 43Z" fill="#17110f"/>
+        <path d="M62 49 Q67 46 72 49 M78 49 Q83 46 88 49" fill="none" stroke="#251815" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="68" cy="51" r="1.8" fill="#e7c8a0"/><circle cx="83" cy="51" r="1.8" fill="#e7c8a0"/>
+        <path d="M75 52 L73 60 L78 60" fill="none" stroke="#633c2d" stroke-width="2" stroke-linecap="round"/>
+        <path d="M67 65 Q75 70 84 64" fill="none" stroke="#3c201b" stroke-width="2" stroke-linecap="round"/>
+        <path d="M87 55 L82 63" stroke="#c07b57" stroke-width="2" stroke-linecap="round"/>
+        <path d="M53 77 Q75 88 98 77 L105 96 Q75 106 46 96Z" fill="#1d1a1c" opacity=".95"/>
+        <g class="heroWeapon">
+          <path d="M112 102 L137 38 L142 40 L119 106Z" fill="#d8c8a8" stroke="#6c5946" stroke-width="2"/>
+          <path d="M116 105 L132 66" stroke="#fff1cc" stroke-width="2" opacity=".55"/>
+          <path d="M109 105 L125 111" stroke="#b7834e" stroke-width="7" stroke-linecap="round"/>
+          <path d="M105 102 L123 108" stroke="#171313" stroke-width="4" stroke-linecap="round"/>
+          <path d="M137 38 L144 25 L145 42Z" fill="#efe1bf"/>
+        </g>
+      </g>
+    </svg>
   </div>
 
   <div id="enemy"><div class="eGlow"></div><div class="eHead"><i class="eye e1"></i><i class="eye e2"></i></div><div class="eBody"></div><div class="claw cl1"></div><div class="claw cl2"></div></div>
@@ -188,8 +219,9 @@ function dodge(){
 }
 function jump(){
   if(!playing||jumping)return;jumping=true;
-  $("hero").style.bottom="32%";
-  setTimeout(()=>$("hero").style.bottom="23%",480);
+  $("hero").classList.remove("jump");void $("hero").offsetWidth;$("hero").classList.add("jump");
+  $("hero").style.bottom="24%";
+  setTimeout(()=>$("hero").style.bottom="20%",480);
   setTimeout(()=>jumping=false,500);
 }
 function rageAttack(){
